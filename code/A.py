@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
 # 前面第一问已经得到了方程组：$$\frac{d}{dt}\theta = \Omega$$
 
@@ -19,7 +20,7 @@ def runge_kutta_4(f, u0: np.ndarray, t0: float, tf: float, dt: float, p: dict) -
     length = int((tf - t0) / dt) + 1
     trajectory = np.zeros((length, 3))
     time = 0
-    while t <= tf:
+    while t < tf:
         theta,omega_1 = u[0],u[1]
         trajectory[time,:] = np.array([t, theta, omega_1])
         k1 = dt * f(u, t, p)
@@ -32,30 +33,47 @@ def runge_kutta_4(f, u0: np.ndarray, t0: float, tf: float, dt: float, p: dict) -
     return trajectory
 
 # 指定初始状态
-p = {'a': 0.1, 'l': 1.0, 'm': 1.0, 'g': 1.0, 'omega': 5.0}
+p = {'a': 0.1, 'l': 1.0, 'm': 1.0, 'g': 1.0, 'omega': 20.0}
 u0 = np.array([np.pi / 5*4, 0.0])
 t0 = 0.0
-tf = 10.0
+tf = 1000
 dt = 0.01
 
 trajectory = runge_kutta_4(f, u0, t0, tf, dt, p)
+# 保存数据
+df = pd.DataFrame(trajectory, columns=['t', 'theta', 'Omega'])
+df.to_csv(f'data/A_{p["omega"]}.json', index=False)
+
 
 t_values = trajectory[:, 0]
 theta_values = trajectory[:, 1]
 Omega_values = trajectory[:, 2]
 
-plt.figure(figsize=(12, 6))
-plt.subplot(2, 1, 1)
-plt.plot(t_values, theta_values, label='θ(t)')
-plt.xlabel('Time [s]')
-plt.ylabel('θ [rad]')
-plt.legend()
+fig, axs = plt.subplots(2, 1, figsize=(10, 8))
 
-plt.subplot(2, 1, 2)
-plt.plot(t_values, Omega_values, label='Ω(t)', color='r')
-plt.xlabel('Time [s]')
-plt.ylabel('Ω [rad/s]')
-plt.legend()
+fig.suptitle(f'$\\theta(t)$ and $\\dot{{\\theta}}(t)$, when $\\omega$ = {p["omega"]}', fontsize=25)
 
-plt.tight_layout()
+axs[0].plot(t_values, theta_values, label='$\\theta(t)$')
+axs[0].set_ylabel('θ [rad]', fontsize=25)
+axs[0].legend()
+
+axs[1].plot(t_values, Omega_values, label='$\\dot{\\theta}(t)$', color='r')
+axs[1].set_xlabel('Time [s]', fontsize=25)
+axs[1].set_ylabel('Omega (Ω)', fontsize=25)
+axs[1].legend()
+
+axs[0].grid(True)
+
+plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+plt.savefig(f'figure/A_{p["omega"]}_t={tf}.png')
+plt.show()
+
+
+
+plt.scatter(theta_values,Omega_values)
+plt.xlabel("$\ theta $ ", fontsize=25)
+plt.ylabel("$\ Omega $", fontsize=25)
+plt.title(f"$\Omega$ vs $\Theta$ when $\omega$ = {p['omega']}", fontsize=25)
+plt.grid(True)
+plt.savefig(f'figure/A_{p["omega"]}_t={tf}_phase.png')
 plt.show()
