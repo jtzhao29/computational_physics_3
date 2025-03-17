@@ -33,10 +33,10 @@ def runge_kutta_4(f, u0: np.ndarray, t0: float, tf: float, dt: float, p: dict) -
     return trajectory
 
 # 指定初始状态
-p = {'a': 0.1, 'l': 1.0, 'm': 1.0, 'g': 1.0, 'omega': 20.0}
+p = {'a': 0.1, 'l': 1.0, 'm': 1.0, 'g': 1.0, 'omega': 2*np.pi}
 u0 = np.array([np.pi / 5*4, 0.0])
 t0 = 0.0
-tf = 1000
+tf = 50
 dt = 0.01
 
 trajectory = runge_kutta_4(f, u0, t0, tf, dt, p)
