@@ -1,51 +1,61 @@
 import numpy as np
-from scipy.integrate import solve_ivp
-
 import matplotlib.pyplot as plt
 
-# Define the system of ODEs
-def equations(t, u, p):
-    theta, Omega = u
-    a, l, m, g, omega = p
-    dtheta_dt = Omega
+# 前面第一问已经得到了方程组：$$\frac{d}{dt}\theta = \Omega$$
+
+# $$\frac{d}{dt}\Omega = \frac{a}{l} \omega^2cos(\omega t )sin\theta -\frac{g}{l} sin(\theta)$$
+
+def f(u: np.ndarray, t: float, p: dict) -> np.ndarray:
+    # 这个函数描述了方程组，输入输出都是array
+    theta, Omega_1 = u
+    a, l, m, g, omega = p['a'], p['l'], p['m'], p['g'], p['omega']
+    dtheta_dt = Omega_1
     dOmega_dt = (a / l) * omega**2 * np.cos(omega * t) * np.sin(theta) - (g / l) * np.sin(theta)
-    return [dtheta_dt, dOmega_dt]
+    return np.array([dtheta_dt, dOmega_dt])
 
-# Runge-Kutta method (RK4)
-def rk4_step(f, t, u, dt, p):
-    k1 = np.array(f(t, u, p))
-    k2 = np.array(f(t + dt / 2, u + dt * k1 / 2, p))
-    k3 = np.array(f(t + dt / 2, u + dt * k2 / 2, p))
-    k4 = np.array(f(t + dt, u + dt * k3, p))
-    return u + (dt / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
+def runge_kutta_4(f, u0: np.ndarray, t0: float, tf: float, dt: float, p: dict) -> np.ndarray:
+    t = t0
+    u = u0
+    length = int((tf - t0) / dt) + 1
+    trajectory = np.zeros((length, 3))
+    time = 0
+    while t <= tf:
+        theta,omega_1 = u[0],u[1]
+        trajectory[time,:] = np.array([t, theta, omega_1])
+        k1 = dt * f(u, t, p)
+        k2 = dt * f(u + 0.5 * k1, t + 0.5 * dt, p)
+        k3 = dt * f(u + 0.5 * k2, t + 0.5 * dt, p)
+        k4 = dt * f(u + k3, t + dt, p)
+        u += (k1 + 2 * k2 + 2 * k3 + k4) / 6
+        t += dt
+        time += 1
+    return trajectory
 
-# Parameters
-a = 0.1
-l = 1.0
-m = 1.0
-g = 1.0
-omega_values = [5, 10, 20]
-initial_conditions = [np.pi / 4, 0]  # [theta(0), Omega(0)]
-t_span = (0, 10)
+# 指定初始状态
+p = {'a': 0.1, 'l': 1.0, 'm': 1.0, 'g': 1.0, 'omega': 5.0}
+u0 = np.array([np.pi / 5*4, 0.0])
+t0 = 0.0
+tf = 10.0
 dt = 0.01
 
-# Solve the ODE for different omega values
-for omega in omega_values:
-    p = [a, l, m, g, omega]
-    t_values = np.arange(t_span[0], t_span[1], dt)
-    u_values = np.zeros((len(t_values), 2))
-    u_values[0] = initial_conditions
+trajectory = runge_kutta_4(f, u0, t0, tf, dt, p)
 
-    for i in range(1, len(t_values)):
-        u_values[i] = rk4_step(equations, t_values[i-1], u_values[i-1], dt, p)
+t_values = trajectory[:, 0]
+theta_values = trajectory[:, 1]
+Omega_values = trajectory[:, 2]
 
-    theta_values = u_values[:, 0]
-
-    # Plot the results
-    plt.plot(t_values, theta_values, label=f'omega={omega}')
-
-plt.xlabel('Time')
-plt.ylabel('Theta')
+plt.figure(figsize=(12, 6))
+plt.subplot(2, 1, 1)
+plt.plot(t_values, theta_values, label='θ(t)')
+plt.xlabel('Time [s]')
+plt.ylabel('θ [rad]')
 plt.legend()
-plt.title('Theta vs Time for different omega values')
+
+plt.subplot(2, 1, 2)
+plt.plot(t_values, Omega_values, label='Ω(t)', color='r')
+plt.xlabel('Time [s]')
+plt.ylabel('Ω [rad/s]')
+plt.legend()
+
+plt.tight_layout()
 plt.show()
