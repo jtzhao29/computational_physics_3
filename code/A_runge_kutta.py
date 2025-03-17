@@ -1,40 +1,39 @@
 import numpy as np
+from typing import Callable, Union
 
-def runge_kutta_4(f, y0, t0, tf, dt):
+def runge_kutta_4(f: Callable[[float, Union[float, np.ndarray]],
+                               Union[float, np.ndarray]], 
+                  y0: Union[float, np.ndarray], 
+                  t0: float, 
+                  tf: float, 
+                  dt: float) -> list:
     """
-    Solve an ODE using the 4th order Runge-Kutta method.
+    这个函数是用龙格库塔法求解方程的
 
-    Parameters:
-    f : function
-        The function that defines the ODE (dy/dt = f(t, y)).
-    y0 : float or np.array
-        The initial condition.
-    t0 : float
-        The initial time.
-    tf : float
-        The final time.
-    dt : float
-        The time step.
+    dt是时间步长
 
-    Returns:
-    t : np.array
-        Array of time points.
-    y : np.array
-        Array of solution values at each time point.
+    输出的是一个列表包含每一步的时间和对应的 y 值 [(t1, y1), (t2, y2), ...]。
+    
     """
-    t = np.arange(t0, tf + dt, dt)
-    y = np.zeros((len(t), len(y0) if isinstance(y0, (list, np.ndarray)) else 1))
-    y[0] = y0
 
-    for i in range(1, len(t)):
-        k1 = dt * f(t[i-1], y[i-1])
-        k2 = dt * f(t[i-1] + dt/2, y[i-1] + k1/2)
-        k3 = dt * f(t[i-1] + dt/2, y[i-1] + k2/2)
-        k4 = dt * f(t[i-1] + dt, y[i-1] + k3)
-        y[i] = y[i-1] + (k1 + 2*k2 + 2*k3 + k4) / 6
+    results = []
+    t, y = t0, y0
+    # 这里的df支持负的，就是对应于时间倒退的情况
+    while (dt > 0 and t <= tf) or (dt < 0 and t >= tf):
+        # 公式
+        k1 = f(t, y)
+        k2 = f(t + dt / 2, y + dt * k1 / 2)
+        k3 = f(t + dt / 2, y + dt * k2 / 2)
+        k4 = f(t + dt, y + dt * k3)
 
-    return t, y
+        # 更新 y 和 t
+        y = y + dt * (k1 + 2 * k2 + 2 * k3 + k4) / 6
+        t = t + dt
 
+        # 保存结果
+        results.append((t, y))
+
+    return results
 # Example usage:
 if __name__ == "__main__":
     def f(t, y):
