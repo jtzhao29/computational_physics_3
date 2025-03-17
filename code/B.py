@@ -72,29 +72,28 @@ t02 = 990
 tf2 = 1000
 
 # trajectory1 = runge_kutta_4(f, u0, t01, tf2, dt, params)
-# t1 = trajectory1[10/dt:, 0]
-# y1 = trajectory1[10/dt:, 1]
-# v1 = trajectory1[10/dt:, 2]
+# t1 = trajectory1[:int(10/dt), 0]
+# y1 = trajectory1[:int(10/dt), 1]
+# v1 = trajectory1[:int(10/dt), 2]
 
-# t2 = trajectory1[990/dt:, 0]
-# y2 = trajectory1[990/dt:, 1]
-# v2 = trajectory1[990/dt:, 2]
+# t2 = trajectory1[int(990/dt):, 0]
+# y2 = trajectory1[int(990/dt):, 1]
+# v2 = trajectory1[int(990/dt):, 2]
 
 
+# # # 展示0-10s的运动轨迹
+# # trajectory1 = runge_kutta_4(f, u0, t01, tf1, dt, params)
+# # t1 = trajectory1[:, 0]
+# # y1 = trajectory1[:, 1]
+# # v1 = trajectory1[:, 2]
 
-# # 展示0-10s的运动轨迹
-# trajectory1 = runge_kutta_4(f, u0, t01, tf1, dt, params)
-# t1 = trajectory1[:, 0]
-# y1 = trajectory1[:, 1]
-# v1 = trajectory1[:, 2]
+# # # 展示990-1000s的运动轨迹
+# # trajectory2 = runge_kutta_4(f, , t02, tf2, dt, params)
+# # t2 = trajectory2[:, 0]
+# # y2 = trajectory2[:, 1]
+# # v2 = trajectory2[:, 2]
 
-# # 展示990-1000s的运动轨迹
-# trajectory2 = runge_kutta_4(f, u0, t02, tf2, dt, params)
-# t2 = trajectory2[:, 0]
-# y2 = trajectory2[:, 1]
-# v2 = trajectory2[:, 2]
-
-# 展示0-10，990-1000s的轨迹（在同⼀张图也画出球拍的轨迹）
+# # 展示0-10，990-1000s的轨迹（在同⼀张图也画出球拍的轨迹）
 
 # fig, axs = plt.subplots(2, 1, figsize=(10, 8))
 
@@ -122,7 +121,7 @@ tf2 = 1000
 # plt.show()
 
 
-# 改变y0
+# # 改变y0
 
 def plot(y0,param,t01,tf2,dt):
     # 展示0-10s的运动轨迹
@@ -141,10 +140,18 @@ def plot(y0,param,t01,tf2,dt):
     plt.savefig(f'figure/B_y0 = {y0}_ii.png')
     plt.show()
 
+    plt.scatter(y1,v1)
+    plt.xlabel('y', fontsize=25)    
+    plt.ylabel('v', fontsize=25)
+    plt.title(f'y vs v when y0 = {y0}', fontsize=25)
+    plt.grid(True)
+    plt.savefig(f'figure/B_y0 = {y0}_phase.png')
+    plt.show()
+
 # for y0 in [1,20,1]:
 #     plot(y0,params,t01,tf2,dt)
 
-plot(10000,params,t01,tf2,dt)
+plot(0.002,params,t01,tf2,dt)
 
 
 

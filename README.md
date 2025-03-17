@@ -80,24 +80,19 @@ $\omega = 20$:
 
 #### 4.理论解释
 
-以上$\omega = 20$时的现象可以用有效势能解释。有效是能是 (Effective Potential Energy) 是通过平均化方法 (Averaging Method)得到的，该方法用于处理包含快速振动或高频项的非线性动力学系统。在Kapitza摆的案例中，有效势能是通过考虑支点的高频振动对摆的运动影响的平均效果来得到的。
+以上$\omega = 20$时的现象可以用有效势能解释。有效是能是 (Effective Potential Energy) 是通过平均化方法 (Averaging Method)得到的，在Kapitza摆中，往复电机对于小球的作用可以平均化为势能。
 
 具体来说，Kapitza摆的运动方程为：
 
 $$\ddot{\theta}+\left(\frac gL+\frac{A\omega^2}L\cos(\omega t)\right)\sin\theta=0$$
 
-其中，$\frac{A\omega^2}L\cos(\omega t)$是一个高频项，其频率远大于摆的自然频率$\sqrt{\frac gL}$。为了简化这个方程，我们可以
-
-使用平均化方法，将高频项的时间平均效果考虑进去。
-
-平均化方法的基本思想是，对于一个快速变化的函数$f(t)$,其在一个周期$T$内的平均值可以表示为
-
-$$\langle f(t)\rangle=\frac1T\int_0^Tf(t)\:dt$$
+其中，$\frac{A\omega^2}L\cos(\omega t)$是一个高频项其频率$\omega$即为电机王府运动的频率。其频率远大于摆的自然频率$\sqrt{\frac gL}$。（前面$\omega$取较大值的时候的现象也能说明这一点）为了简化这个方程，我们可以使用平均化方法，将高频项的时间平均效果考虑进去。
 
 
-在Kapitza摆的案例中，我们考虑$\cos(\omega t)$ 的平均效果。由于$\cos(\omega t)$ 是一个周期函数，其在一个周期的平均值为零。但是，\( \cos^2(\omega t) \) 的平均值不为零，因为 \( \cos^2(\omega t) = \frac{1 + \cos(2\omega t)}{2} \)，而 \( \cos(2\omega t) \) 的平均值也为零，所以 \( \cos^2(\omega t) \) 的平均值为 \( \frac{1}{2} \)。
+在Kapitza摆中，我们考虑$\cos(\omega t)$ 的平均效果。 \( \cos^2(\omega t) \) 的平均值为 \( \frac{1}{2} \)。
 
-因此，我们可以将 \( \frac{A \omega^2}{L} \cos(\omega t) \sin \theta \) 的平均效果表示为 \( \frac{A \omega^2}{2L} \sin \theta \)。这样，Kapitza摆的运动方程可以近似为：
+因此，我们可以将 \( \frac{A \omega^2}{L} \cos(\omega t) \sin \theta \) 的平均效果表示为 \( \frac{A \omega^2}{2L} \sin \theta \)。
+这样，Kapitza摆的运动方程可以近似为：
 
 \[ \ddot{\theta} + \left( \frac{g}{L} + \frac{A \omega^2}{2L} \right) \sin \theta = 0 \]
 
@@ -106,8 +101,6 @@ $$\langle f(t)\rangle=\frac1T\int_0^Tf(t)\:dt$$
 \[ V_{\text{eff}}(\theta) = -\left( \frac{g}{L} + \frac{A \omega^2}{2L} \right) \cos \theta \]
 
 这个有效势能考虑了支点的高频振动对摆的运动的平均影响。当 \( A \omega^2 \) 足够大时，\( \frac{A \omega^2}{2L} \) 项会主导势能，使得 \( \theta = \pi \)（即摆锤在竖直向上位置）成为势能的最小值点，从而变得稳定。
-
-综上所述，有效势能是通过平均化方法得到的，它考虑了高频振动对系统运动的平均影响。在Kapitza摆的案例中，有效势能的计算展示了高频振动如何改变系统的稳定性。
 
 ### B. 乒乓球
 
@@ -161,16 +154,18 @@ def runge_kutta_4(f, u0: np.ndarray, t0: float, tf: float, dt: float, p: dict) -
 改变y0，得到结果如下：
 y0=0.1:
 ![alt text](<figure/B_y0 = 0.1_ii.png>)
+![alt text](<figure/B_y0 = 0.1_phase.png>)
 y0=1：
 ![alt text](<figure/B_y0 = 1_ii.png>)
+![alt text](<figure/B_y0 = 1_phase.png>)
 y0=20:
 ![alt text](<figure/B_y0 = 20_ii.png>)
 y0=100:
 ![alt text](<figure/B_y0 = 100_ii.png>)
-y0=10000:
-![alt text](<figure/B_y0 = 10000_ii.png>)
 
-由上述图片可以发现，
+由上述轨迹图和相图可以发现：
+1. 存在一种运动模式，是周期性的运动，运动频率等于球拍的振动频率.尤其是在y0非常大的时候，在球拍的作用可以近似为地面，碰撞的位置近似为相等，碰撞后速度反相，有固定的周期
+2. 还存在另一种运动模式，是混沌体系，相图不会回到原来的轨迹
 
 ##### iii.阻尼
 将阻尼系数gamma=0，得到结果如下：
@@ -188,12 +183,35 @@ y0=0.6:
 ![alt text](7a2d7bab2f4b388d5110a7e2f3ecb3f.png)
 
 由以上图片可以发现：
-没有阻尼的情况下，振荡的最大幅值不同，能达到的最大值不同。
-阻尼在这个过程中起到了损耗能量，使得体系达到了某种周期性的作用。
+没有阻尼的情况下，振荡的最大幅值不同，能达到的最大值不同。在没有阻尼时，系统进入了一种复杂的混沌体系对于处置条件非常敏感，运动也不是周期性的。此外，虽然没有周期性，但是由于重力的作用，物体的运动依然被限制在了一定的空间范围内，没有发散。
+阻尼在这个过程中起到了损耗能量的作用。在没有阻尼的情况下，系统中的能量无法耗散，这使得能量可以在各个自由度之间复杂地流动。这些复杂的能量流动与碰撞的非线性相互作用，可能是导致混沌行为的原因。
+
 #### 4.
-在不发生碰撞时，求解关于$$\dot{y}$$的方程,解得$$\dot{y}=ce^{-\gamma t}-\frac{g}{\gamma}$$,由于在$t=0$时，$\dot{y}=0$，因此$\dot{y}(t)=\frac{g}{\gamma}e^{-\gamma t}-\frac{g}{\gamma}$。
+在不发生碰撞时，求解关于$\dot{y}$的方程,解得$$\dot{y}=ce^{-\gamma t}-\frac{g}{\gamma}$$,由于在$t=0$时，$\dot{y}=0$，因此$\dot{y}(t)=\frac{g}{\gamma}e^{-\gamma t}-\frac{g}{\gamma}$。
 
 积分得到$y(t)=y_0-\frac{g}{\gamma^2}e^{-\gamma t}-\frac{g}{\gamma}t+\frac{g}{\gamma^2}$。
+
+对于普适的情况：
+$$\dot{y}=ce^{-\gamma t}-\frac{g}{\gamma}$$
+$$y(t)=y_0-\frac{c}{\gamma}e^{-\gamma t}-\frac{g}{\gamma}t$$
+
+
+不妨设在t0时发生碰撞时，$\dot{y}$发生突变：
+$$ \dot{y} = 2A \omega cos\omega t_0 -c_1e^{-\gamma t_0}+\frac{g}{\gamma}$$
+又由$$c_2-\frac{g}{\gamma}=2A \omega cos\omega t_0 -c_1e^{-\gamma t_0}+\frac{g}{\gamma}$$
+得：
+$$c_2=2A \omega cos\omega t_0 -c_1e^{-\gamma t_0}+\frac{2g}{\gamma}$$
+上式给出了碰撞前后$\dot{y}$式子中常数c的变化。
+由此在碰撞时刻就可以由碰撞的时刻精确地得出碰撞后$\dot{y}$的演化方程，积分后就可以得到y的精确求解。
+
+总结如下：
+
+1. 初始时刻已知y,v的初始值，由此得到$$\dot{y}=ce^{-\gamma t}-\frac{g}{\gamma}$$中的常数c
+2. 代入常数，得到$\dot{y}$和y的演化方程
+3. y =h(t)求解得到碰撞时刻
+4. 将碰撞时刻$t_0$带入$$c_2=2A \omega cos\omega t_0 -c_1e^{-\gamma t_0}+\frac{2g}{\gamma}$$得到碰撞后$\dot{y}$和y的演化方程中的常数$c_2$，回到步骤2.
+
+重复以上所示，就是求解y的轨迹的精确方法。 
 
 
 ## 附录
