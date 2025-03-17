@@ -5,7 +5,7 @@
 ### A. Kapitza摆
 #### 1.求出系统的运动⽅程
 
-以 $\theta $,$ \dot{\theta} $为广义坐标和广义速度：
+以 $\theta$,$\dot{\theta}$为广义坐标和广义速度：
 得到小球的动能：
 $$T = \frac{1}{2}m[(-a \omega sin\omega t+l\dot{\theta}sin \theta)^2+(l \dot{\theta} cos \theta)^2]$$
 $$T  = \frac{m}{2}[(l \dot{\theta} )^2+(a \omega sin(\omega t))^2-2a \omega l \dot{\theta}sin(\omega t)sin \theta]$$
